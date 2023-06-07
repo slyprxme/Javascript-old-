@@ -93,9 +93,11 @@ body {
   margin-right: 1.3rem;
 }
 
-.repos {
+.repo {
   text-decoration: none;
-  color: #539bf5;
+  background-color: #a7bfce;
+  color: #0e1219;
+  border-radius: 5px;
   font-size: 0.8rem;
   font-weight: bold;
   padding: 0.25rem 0.5rem;
