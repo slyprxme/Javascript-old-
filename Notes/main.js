@@ -2,48 +2,64 @@
 
 const addBtn = document.getElementById('add')
 
-addBtn.addEventListener('click', () => addNewNote('Hlo'))
+const notes = JSON.parse(localStorage.getItem('notes'))
+
+if(notes) {
+    notes.forEach(note => addNewNote(note))
+}
+
+addBtn.addEventListener('click', () => addNewNote())
 
 function addNewNote(text = '') {
-  const note = document.createElement('div')
-  note.classList.add('note')
+    const note = document.createElement('div')
+    note.classList.add('note')
 
-  note.innerHTML = `
+    note.innerHTML = `
+    <div class="tools">
+        <button class="edit"><i class="fas fa-edit"></i></button>
+        <button class="delete"><i class="fas fa-trash-alt"></i></button>
+    </div>
 
-      <div class="tools">
-        <button class="edit">
-          <i class="fas fa-edit"></i>
-        </button>
-        <button class="delete">
-          <i class="fas fa-trash-alt"></i>
-        </button>
-      </div>
-      <div class="main ${text ? '' : 'hidden'}"></div>
-      <textarea class = "${text ? 'hidden' : ''}"></textarea>
-`
+    <div class="main ${text ? "" : "hidden"}"></div>
+    <textarea class="${text ? "hidden" : ""}"></textarea>
+    `
 
-  const editBtn = note.querySelector('.edit')
-  const delBtn = note.querySelector('.delete')
-  const mainBtn = note.querySelector('.main')
-  const textBtn = note.querySelector('textarea')
+    const editBtn = note.querySelector('.edit')
+    const deleteBtn = note.querySelector('.delete')
+    const main = note.querySelector('.main')
+    const textArea = note.querySelector('textarea')
 
-  textBtn.value = text
-  mainBtn.innerHTML = marked(text)
+    textArea.value = text
+    main.innerHTML = marked(text)
 
-  delBtn.addEventListener('click', () => {
-    note.remove()
-  })
+    deleteBtn.addEventListener('click', () => {
+        note.remove()
 
-  editBtn.addEventListener('click', () => {
-    mainBtn.classList.toggle('hidden')
-    textBtn.classList.toggle('hidden')
-  })
+        updateLS()
+    })
 
-  textBtn.addEventListener('input', (e) => {
-    const { value } = e.target
-    main.innerHTML = marked(value)
-  })
+    editBtn.addEventListener('click', () => {
+        main.classList.toggle('hidden')
+        textArea.classList.toggle('hidden')
+    })
 
-  document.body.appendChild(note)
+    textArea.addEventListener('input', (e) => {
+        const { value } = e.target
 
+        main.innerHTML = marked(value)
+
+        updateLS()
+    })
+
+    document.body.appendChild(note)
+}
+
+function updateLS() {
+    const notesText = document.querySelectorAll('textarea')
+
+    const notes = []
+
+    notesText.forEach(note => notes.push(note.value))
+
+    localStorage.setItem('notes', JSON.stringify(notes))
 }
