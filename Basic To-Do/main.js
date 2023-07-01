@@ -1,6 +1,13 @@
+/* eslint-disable no-undef */
 const form = document.getElementById('form')
 const input = document.getElementById('input')
 const todosUl = document.getElementById('todos')
+
+const todos = JSON.parse(localStorage.getItem('todos'))
+
+if (todos) {
+  todos.forEach((todo) => addTodo(todo))
+}
 
 form.addEventListener('submit', (e) => {
   e.preventDefault()
@@ -23,14 +30,33 @@ function addTodo(todo) {
 
     todoEl.innerText = todoText
 
-    todoEl.addEventListener('click', () => todoEl.classList.toggle('completed'))
+    todoEl.addEventListener('click', () => {
+      todoEl.classList.toggle('completed')
+      updateLS()
+    })
     todoEl.addEventListener('contextmenu', (e) => {
       e.preventDefault()
       todoEl.remove()
+      updateLS()
     })
 
     todosUl.appendChild(todoEl)
 
     input.value = ''
+
+    updateLS()
   }
+}
+
+function updateLS() {
+  let todosEl = document.querySelectorAll('li')
+  const todos = []
+  todosEl.forEach((todoEl) => {
+    todos.push({
+      text: todoEl.innerText,
+      completed: todoEl.classList.contains('completed'),
+    })
+  })
+
+  localStorage.setItem('todos', JSON.stringify(todos))
 }
